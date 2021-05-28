@@ -55,7 +55,7 @@ contract TokenFarm {
         uint balance = stakingBalance[msg.sender];
 
         //Require amount greater than 0
-        require(balance > 0, "staking balance cannot be o");
+        require(balance > 0, "staking balance cannot be 0");
 
         //Transfer Mock Dai tokens back to the user from the app 
         daiToken.transfer(msg.sender, balance); 
