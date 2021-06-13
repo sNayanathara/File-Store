@@ -6,6 +6,8 @@ import TokenFarm from '../abis/TokenFarm.json'
 import Navbar from './Navbar'
 import Main from './Main'
 import './App.css'
+import ShareSpace from './ShareSpace'
+import Upload from './Upload'
 
 
 
@@ -28,7 +30,7 @@ class App extends Component {
 
     //Load DaiToken
     const daiTokenData = DaiToken.networks[networkId]
-    if(daiTokenData) {
+    if (daiTokenData) {
       //creates a new contract insance with all its methods and events defined in its json interface object
       const daiToken = new web3.eth.Contract(DaiToken.abi, daiTokenData.address)
       this.setState({ daiToken })
@@ -40,7 +42,7 @@ class App extends Component {
 
     //Load DappToken
     const dappTokenData = DappToken.networks[networkId]
-    if(dappTokenData) {
+    if (dappTokenData) {
       //creates a new contract insance with all its methods and events defined in its json interface object
       const dappToken = new web3.eth.Contract(DappToken.abi, dappTokenData.address)
       this.setState({ dappToken })
@@ -52,7 +54,7 @@ class App extends Component {
 
     //Load TokenFarm
     const tokenFarmData = TokenFarm.networks[networkId]
-    if(tokenFarmData) {
+    if (tokenFarmData) {
       //creates a new contract insance with all its methods and events defined in its json interface object
       const tokenFarm = new web3.eth.Contract(TokenFarm.abi, tokenFarmData.address)
       this.setState({ tokenFarm })
@@ -69,7 +71,7 @@ class App extends Component {
   // to connect the app to the blockchain
   async loadWeb3() {
     if (window.ethereum) {
-      window.web3 =new Web3(window.ethereum)
+      window.web3 = new Web3(window.ethereum)
       await window.ethereum.enable()
     }
     else if (window.web3) {
@@ -103,25 +105,57 @@ class App extends Component {
       daiToken: {},   //the smart contracts of the the 3 tokens will be stored in these 3
       dappToken: {},
       tokenFarm: {},
-      daiTokenBalance: '0',
+      daiTokenBalance: '100',
       dappTokenBalance: '0',
       stakingBalance: '0',
-      loading: true
+      loading: true,
+      renderView : 0
     }
   }
 
+  clickBtn = e => {
+    this.setState({
+      renderView: +e.target.value
+    });
+  };
+
   render() {
     let content
-    if (this.state.loading) {
-      content = <p id="loader" className="text-center">Loading...</p>
-    } else {
-      content = <Main
-      daiTokenBalance={this.state.daiTokenBalance}
-      dappTokenBalance={this.state.dappTokenBalance}
-      stakingBalance={this.state.stakingBalance}
-      stakeTokens={this.stakeTokens}
-      unstakeTokens={this.unstakeTokens}
-      />
+    // if (this.state.loading) {
+    //   content = <p id="loader" className="text-center">Loading...</p>
+    // } else {
+    //   content = <Upload
+    //   daiTokenBalance={this.state.daiTokenBalance}
+    //   dappTokenBalance={this.state.dappTokenBalance}
+    //   stakingBalance={this.state.stakingBalance}
+    //   stakeTokens={this.stakeTokens}
+    //   unstakeTokens={this.unstakeTokens}
+    // /> 
+      
+    // }
+
+    
+    switch (this.state.renderView) {
+      case 1:
+        content = <Upload
+          daiTokenBalance={this.state.daiTokenBalance}
+          dappTokenBalance={this.state.dappTokenBalance}
+          stakingBalance={this.state.stakingBalance}
+          stakeTokens={this.stakeTokens}
+          unstakeTokens={this.unstakeTokens}
+        /> ;
+        break
+      case 2:
+        content = <ShareSpace
+          daiTokenBalance={this.state.daiTokenBalance}
+          dappTokenBalance={this.state.dappTokenBalance}
+          stakingBalance={this.state.stakingBalance}
+          stakeTokens={this.stakeTokens}
+          unstakeTokens={this.unstakeTokens}
+        /> ;
+        break
+      default:
+        content = <Main clickBtn={this.clickBtn} />;
     }
 
     return (
